@@ -34,7 +34,7 @@ ENTRYPOINT (. ~/dirac_ui/bashrc && \
            dirac-proxy-init -x && \
            dirac-configure -F -S GridPP -C dips://dirac01.grid.hep.ph.ic.ac.uk:9135/Configuration/Server -I && \
            dirac-proxy-init -g ${vo}_user -M) && \
-           cp /tmp/x509up_u`id -u ganga`{,:${vo}_user} && \
+           cp /tmp/x509up_u`id -u dirac`{,:${vo}_user} && \
            echo -e "[defaults_DiracProxy]\ngroup=${vo}_user" >> ~/.gangarc && \
            . ~/ganga_env/bin/activate && \
            yes | ganga -g > /dev/null && \
