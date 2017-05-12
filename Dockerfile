@@ -23,7 +23,8 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | /usr/local/bin/python2.7 - --use
     . ~/ganga_env/bin/activate && \
     pip install ganga==$ganga_version && \
     echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" > ~/.gangarc && \
-    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc
+    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
+    echo $ganga_version > ~/gangadir/.used_versions
 #    echo -e '[defaults_DiracProxy]\ngroup="gridpp_user"' > ~/.gangarc && \
 #    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" >> ~/.gangarc && \
 #    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
