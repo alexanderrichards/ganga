@@ -22,15 +22,20 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | /usr/local/bin/python2.7 - --use
     ~/.local/bin/virtualenv ganga_env && \
     . ~/ganga_env/bin/activate && \
     pip install ganga==$ganga_version && \
-    echo -e '[defaults_DiracProxy]\ngroup="gridpp_user"' > ~/.gangarc && \
-    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" >> ~/.gangarc && \
-    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
-    yes | ganga -g && \
-    echo $ganga_version > ~/gangadir/.used_versions
+    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" > ~/.gangarc && \
+    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc
+#    echo -e '[defaults_DiracProxy]\ngroup="gridpp_user"' > ~/.gangarc && \
+#    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" >> ~/.gangarc && \
+#    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
+#    yes | ganga -g && \
+#    echo $ganga_version > ~/gangadir/.used_versions
 
 ENTRYPOINT (. ~/dirac_ui/bashrc && \
            dirac-proxy-init -x && \
            dirac-configure -F -S GridPP -C dips://dirac01.grid.hep.ph.ic.ac.uk:9135/Configuration/Server -I && \
            dirac-proxy-init -g ${vo}_user -M) && \
+           cp /tmp/x509up_u`id -u ganga`{,:${vo}_user} && \
+           echo -e "[defaults_DiracProxy]\ngroup=${vo}_user" >> ~/.gangarc && \
            . ~/ganga_env/bin/activate && \
+           yes | ganga -g > /dev/null && \
            ganga
