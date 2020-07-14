@@ -1,43 +1,26 @@
-FROM alexanderrichards/dirac_ui:latest
-LABEL maintainer "Alexander Richards <a.richards@imperial.ac.uk>"
-ARG ganga_version=6.5.2
+# syntax = docker/dockerfile:1.0-experimental
+FROM centos:7
+ARG dirac_version=v6r22p26
+ARG ganga_version=8.3.3
 
-USER root
-RUN yum groupinstall -y 'development tools' && \
-    yum install -y zlib-dev openssl-devel sqlite-devel bzip2-devel readline-devel && \
-    wget -np -O Python-2.7.13.tar.xz https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tar.xz && \
-    tar -xvf Python-2.7.13.tar.xz && \
-    cd Python-2.7.13 && \
-    ./configure --prefix=/usr/local && \
-    make && \
-    make altinstall && \
-    cd - && \
-    rm -rf Python-2.7.13*
+RUN yum install -y wget python3
+RUN python3 -m pip install --upgrade pip setuptools wheel
 
+RUN mkdir /root/dirac_ui
+RUN wget -np -O /root/dirac_ui/dirac-install https://raw.githubusercontent.com/DIRACGrid/DIRAC/integration/Core/scripts/dirac-install.py
+RUN chmod u+x /root/dirac_ui/dirac-install
 
-USER dirac
+WORKDIR /root/dirac_ui
+RUN /root/dirac_ui/dirac-install -r $dirac_version -i 27 -g v14r1
+RUN rm -f /root/dirac_ui/dirac-install
+RUN --mount=type=secret,id=proxy,dst=/tmp/x509up_u0 . /root/dirac_ui/bashrc && dirac-configure -F -S GridPP -C dips://dirac01.grid.hep.ph.ic.ac.uk:9135/Configuration/Server -I
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | /usr/local/bin/python2.7 - --user && \
-    ~/.local/bin/pip install --user virtualenv && \
-    ~/.local/bin/virtualenv ganga_env && \
-    . ~/ganga_env/bin/activate && \
-    pip install ganga==$ganga_version && \
-    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" > ~/.gangarc && \
-    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
-    mkdir ~/gangadir && \
-    echo $ganga_version > ~/gangadir/.used_versions
-#    echo -e '[defaults_DiracProxy]\ngroup="gridpp_user"' > ~/.gangarc && \
-#    echo -e "[DIRAC]\nDiracEnvSource = ~/dirac_ui/bashrc" >> ~/.gangarc && \
-#    echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> ~/.gangarc && \
-#    yes | ganga -g && \
-#    echo $ganga_version > ~/gangadir/.used_versions
+WORKDIR /root
+RUN python3 -m pip install ganga==$ganga_version
+RUN yes | ganga -g
+RUN echo -e "[DIRAC]\nDiracEnvSource = /root/dirac_ui/bashrc" > /root/.gangarc
+RUN echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> /root/.gangarc
+RUN mkdir -p /root/gangadir
+RUN echo $ganga_version > /root/gangadir/.used_versions
 
-ENTRYPOINT (. ~/dirac_ui/bashrc && \
-           dirac-proxy-init -x && \
-           dirac-configure -F -S GridPP -C dips://dirac01.grid.hep.ph.ic.ac.uk:9135/Configuration/Server -I && \
-           dirac-proxy-init -g ${vo}_user -M) && \
-           cp /tmp/x509up_u`id -u dirac`{,:${vo}_user} && \
-           echo -e "[defaults_DiracProxy]\ngroup=${vo}_user" >> ~/.gangarc && \
-           . ~/ganga_env/bin/activate && \
-           yes | ganga -g > /dev/null && \
-           ganga
+CMD ["ganga"]
