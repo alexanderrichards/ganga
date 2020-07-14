@@ -17,9 +17,9 @@ RUN --mount=type=secret,id=proxy,dst=/tmp/x509up_u0 . /root/dirac_ui/bashrc && d
 
 WORKDIR /root
 RUN python3 -m pip install ganga==$ganga_version
-RUN yes | ganga -g
 RUN echo -e "[DIRAC]\nDiracEnvSource = /root/dirac_ui/bashrc" > /root/.gangarc
 RUN echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> /root/.gangarc
+RUN yes | ganga -g
 RUN mkdir -p /root/gangadir
 RUN echo $ganga_version > /root/gangadir/.used_versions
 
