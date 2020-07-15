@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password-stdin: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: alexanderrichards/ganga
           tag_with_ref: true
           push: ${{ startsWith(github.ref, 'refs/tags/') }}
