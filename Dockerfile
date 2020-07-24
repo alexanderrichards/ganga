@@ -14,5 +14,5 @@ RUN yes | ganga -g
 RUN mkdir -p /root/.cache/Ganga
 RUN echo $ganga_version > /root/.cache/Ganga/.used_versions
 
-CMD ['/bin/bash']
-#CMD ["ganga"]
+COPY startup.sh /root/startup.sh
+CMD ["/bin/bash", "--init-file", "/root/startup.sh"]
