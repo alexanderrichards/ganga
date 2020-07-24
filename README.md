@@ -10,3 +10,6 @@ If your using udocker to run in userspace, this becomes:
 
 ```bash
 udocker run --volume=<grid cert/key dir>:/root/.globus alexanderrichards/ganga
+```
+
+![Ganga Image Usage](examples/image_usage.gif)
