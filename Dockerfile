@@ -3,7 +3,8 @@ ARG dirac_version=latest
 FROM alexanderrichards/dirac_ui:${dirac_version}
 ARG ganga_version=8.3.3
 
-RUN yum install -y python3
+RUN yum install -y epel-release
+RUN yum install -y python3 root python3-root
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 WORKDIR /root
@@ -15,4 +16,4 @@ RUN mkdir -p /root/.cache/Ganga
 RUN echo $ganga_version > /root/.cache/Ganga/.used_versions
 
 COPY startup.sh /root/startup.sh
-CMD ["/bin/bash", "--init-file", "/root/startup.sh"]
+CMD ["/root/startup.sh"]
