@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.0-experimental
 ARG dirac_version=v6r22p26
 FROM alexanderrichards/dirac_ui:${dirac_version}
-ARG ganga_version=8.3.5
+ARG ganga_version=8.4.0
 
 RUN yum install -y epel-release
 RUN yum install -y python3 root python3-root
