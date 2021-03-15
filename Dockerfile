@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.0-experimental
-ARG dirac_version=v7r1p17
+ARG dirac_version=v7r1p26
 FROM alexanderrichards/dirac_ui:${dirac_version}
 ARG ganga_version=8.4.6
 
