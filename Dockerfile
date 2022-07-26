@@ -9,7 +9,7 @@ RUN python3 -m pip install --upgrade pip setuptools wheel
 
 WORKDIR /root
 RUN python3 -m pip install ganga==$ganga_version
-RUN echo -e "[DIRAC]\nDiracEnvSource = /root/dirac_ui/bashrc" > /root/.gangarc
+RUN echo -e "[DIRAC]\nDiracEnvSource = /root/dirac_ui/diracos/diracosrc" > /root/.gangarc
 RUN echo -e "[Configuration]\nRUNTIME_PATH=GangaDirac" >> /root/.gangarc
 RUN yes | ganga -g
 RUN mkdir -p /root/.cache/Ganga
