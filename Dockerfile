@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.0-experimental
-ARG dirac_version=7.3.26
+ARG dirac_version
 FROM alexanderrichards/dirac_ui:${dirac_version}
-ARG ganga_version=8.6.8
+ARG ganga_version
 
 RUN yum install -y epel-release
 RUN yum install -y python3 root python3-root
@@ -15,5 +15,5 @@ RUN yes | ganga -g
 RUN mkdir -p /root/.cache/Ganga
 RUN echo $ganga_version > /root/.cache/Ganga/.used_versions
 
-COPY startup.sh /root/startup.sh
-CMD ["/root/startup.sh"]
+COPY startup.sh /root/gangastartup.sh
+CMD ["/root/gangastartup.sh"]
