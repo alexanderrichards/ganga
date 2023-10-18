@@ -1,0 +1,38 @@
+name: CD release build and publish
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get Ganga and DIRAC UI versions
+        uses: winterjung/split@v2.1.0
+        id: versions_split
+        with:
+          msg: ${{ github.event.release.tag_name }}
+          separator: '-'
+      - name: Build
+        if: steps.versions_split.outputs.length == 2
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: . 
+          platforms: linux/amd64
+          tags: alexanderrichards/ganga:${{ github.event.release.tag_name }},alexanderrichards/ganga:latest
+          build-args: |
+            dirac_version=${{ steps.versions_split.outputs._1 }}
+            ganga_version=${{ steps.versions_split.outputs._0 }}
