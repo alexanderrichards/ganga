@@ -1,4 +1,5 @@
 [![CI build test workflow](https://github.com/alexanderrichards/ganga/actions/workflows/build-test.yml/badge.svg)](https://github.com/alexanderrichards/ganga/actions/workflows/build-test.yml)
+[![CD release build and publish](https://github.com/alexanderrichards/ganga/actions/workflows/release-build.yml/badge.svg)](https://github.com/alexanderrichards/ganga/actions/workflows/release-build.yml)
 
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/alexanderrichards/ganga?label=version%20%28Ganga-Dirac%20UI%29&logo=docker&sort=semver)
 # ganga
