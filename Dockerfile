@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1.0-experimental
+# syntax = docker/dockerfile:1
 ARG dirac_version
 FROM alexanderrichards/dirac_ui:${dirac_version}
 ARG ganga_version
